@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "822388009199",
+    "project_id": "yummysushi-652f5",
+    "storage_bucket": "yummysushi-652f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822388009199:android:32418747548b67a526931a",
+        "android_client_info": {
+          "package_name": "com.sushi.inventario_yummy_sushi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9esLKJHL_MzaJbRIsx6AkTLXkLPyIzwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

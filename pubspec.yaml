@@ -1,0 +1,38 @@
+name: inventario_yummy_sushi
+description: A new Flutter project.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_bloc: ^8.1.3
+  retrofit: ^4.0.3
+  dio: ^5.3.3
+  get_it: ^7.6.4
+  intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
+  flutter_countdown_timer: ^4.1.0
+  firebase_core: ^2.22.0
+  cloud_firestore: ^4.13.1
+  firebase_storage: ^11.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner:
+  flutter_gen_runner:
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/

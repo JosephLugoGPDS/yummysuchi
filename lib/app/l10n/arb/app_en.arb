@@ -1,0 +1,17 @@
+{
+ "app": "Inventario Yummy sushi",
+  "@app": {
+    "description": "The conventional name App"
+  },
+  "item": "Artículo",
+  "quantity": "Cantidad",
+  "description": "Descripción",
+  "price": "Precio",
+  "total": "Total",
+  "inventory": "Inventario",
+  "add": "Agregar",
+  "remove": "Eliminar",
+  "edit": "Editar",
+  "save": "Guardar",
+  "cancel": "Cancelar"
+}
