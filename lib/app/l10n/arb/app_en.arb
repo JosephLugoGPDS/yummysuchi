@@ -13,5 +13,8 @@
   "remove": "Eliminar",
   "edit": "Editar",
   "save": "Guardar",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "name": "Nombre",
+  "welcomeNameRequired": "Hola, para empezar, necsitamos guardar tu nombre",
+  "nameRequired": "El nombre es requerido"
 }

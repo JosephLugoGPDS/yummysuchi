@@ -8,4 +8,4 @@ extension SizeExtension on num {
   double get h => ScreenUtil().setHeight(this) as double;
 
   double get sp => ScreenUtil().setSp(this) as double;
-}    
+}

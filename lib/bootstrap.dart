@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventario_yummy_sushi/firebase_options.dart';
 import 'package:inventario_yummy_sushi/injector_container.dart' as di;
-
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -29,9 +30,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     
     WidgetsFlutterBinding.ensureInitialized();
     await di.init();
-    // await Firebase.initializeApp(
-//   options: DefaultFirebaseOptions.currentPlatform,
-// );
+    // await dotenv.load();
+    await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
     // Run App
     // Run Zoned guard
     runApp(await builder());

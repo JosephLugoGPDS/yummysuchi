@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
@@ -17,9 +18,8 @@ class HomeView extends StatelessWidget {
           ),
           SliverList(
             delegate: SliverChildListDelegate(
-              [
-
-            ],),
+              [],
+            ),
           ),
         ],
       ),
