@@ -8,21 +8,27 @@ part 'get_user_state.dart';
 
 class GetUserBloc extends Bloc<GetUserEvent, GetUserState> {
   GetUserBloc() : super(GetUserInitial()) {
-    on<GetUserEvent>((event, emit) async {
-      if (event is FetchUserEvent) {
-        emit(GetUserLoading());
-        try {
-          User? user = await _getUserData(event.uuid, event.name);
-          if (user == null) {
-            emit(GetUserFailure('User not found'));
-            return;
-          }
-          emit(GetUserSuccess(user));
-        } catch (error) {
-          emit(GetUserFailure(error.toString()));
-        }
-      }
-    });
+    on<FetchUserEvent>(_onFetchUserEvent);
+  }
+}
+
+void _onFetchUserEvent(
+  FetchUserEvent event,
+  Emitter<GetUserState> emit,
+) async {
+  emit(GetUserLoading());
+  try {
+    User? user = await _getUserData(event.uuid, event.name);
+    if (user == null) {
+      debugPrint('User not found');
+
+      emit(GetUserFailure('User not found'));
+    } else {
+      emit(GetUserSuccess(user));
+    }
+  } catch (error) {
+    debugPrint(error.toString());
+    emit(GetUserFailure(error.toString()));
   }
 }
 
@@ -35,11 +41,11 @@ Future<User?> _getUserData(String uuid, String? userName) async {
         'name': userName,
         'uuid': uuid,
       });
-    User user = User(
-      uuid: uuid,
-      name: userName,
-    );
-    return user;
+      User user = User(
+        uuid: uuid,
+        name: userName,
+      );
+      return user;
     } else {
       CollectionReference usersCollection =
           FirebaseFirestore.instance.collection('users');
@@ -53,7 +59,6 @@ Future<User?> _getUserData(String uuid, String? userName) async {
       } else {
         return null;
       }
-
     }
   } catch (error) {
     debugPrint(error.toString());

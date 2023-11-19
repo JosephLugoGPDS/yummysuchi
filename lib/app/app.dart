@@ -2,7 +2,8 @@ import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/app/utils/screen_util.dart';
-import 'package:inventario_yummy_sushi/blocs/splash_cubit.dart';
+import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/views/splash_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class App extends StatelessWidget {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SplashCubit>(create: (_) => di.sl<SplashCubit>()),
+        BlocProvider<GetUserBloc>(create: (_) => di.sl<GetUserBloc>()),
+        BlocProvider<GetUuidBloc>(create: (_) => di.sl<GetUuidBloc>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
@@ -38,9 +40,10 @@ class App extends StatelessWidget {
         // initialRoute: AppRoute.initial,
         home: Builder(
           builder: (contextBuilder) {
+            contextBuilder.read<GetUuidBloc>().add(const FetchUuidEvent());
             ScreenUtil.init(
-          allowFontScaling: true,
-        );
+              allowFontScaling: true,
+            );
             return const SplashView();
           },
         ),

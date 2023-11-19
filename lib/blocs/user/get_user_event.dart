@@ -5,8 +5,8 @@ abstract class GetUserEvent {}
 class FetchUserEvent extends GetUserEvent {
   FetchUserEvent({
     required this.uuid,
-    this.name = 'Usuario',
+    this.name,
   });
   final String uuid;
-  final String name;
+  final String? name;
 }
