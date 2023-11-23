@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/extensions/size_extension.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
+import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/is_saved_user_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
@@ -50,6 +51,9 @@ class SplashScreen extends StatelessWidget {
                         context
                             .read<GetUserBloc>()
                             .add(FetchUserEvent(uuid: stateGetUuidState.uuid));
+                        context.read<GetInventoriesBloc>().add(
+                            FetchInventoriesEvent(
+                                uuid: stateGetUuidState.uuid));
                       } else {
                         showDialog(
                           barrierDismissible: false,

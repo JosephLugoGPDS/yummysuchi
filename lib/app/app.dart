@@ -2,6 +2,7 @@ import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/app/utils/screen_util.dart';
+import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/views/splash_view.dart';
@@ -21,6 +22,8 @@ class App extends StatelessWidget {
       providers: [
         BlocProvider<GetUserBloc>(create: (_) => di.sl<GetUserBloc>()),
         BlocProvider<GetUuidBloc>(create: (_) => di.sl<GetUuidBloc>()),
+        BlocProvider<GetInventoriesBloc>(
+            create: (_) => di.sl<GetInventoriesBloc>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
@@ -40,7 +43,7 @@ class App extends StatelessWidget {
         // initialRoute: AppRoute.initial,
         home: Builder(
           builder: (contextBuilder) {
-            contextBuilder.read<GetUuidBloc>().add(const FetchUuidEvent());
+            // contextBuilder.read<GetUuidBloc>().add(const FetchUuidEvent());
             ScreenUtil.init(
               allowFontScaling: true,
             );
