@@ -7,7 +7,7 @@ part 'inventory.g.dart';
 @JsonSerializable()
 class Inventory {
   String name;
-  List<Product> products;
+  List<Product>? products;
   List<String> providers;
   String? description;
   String asset;

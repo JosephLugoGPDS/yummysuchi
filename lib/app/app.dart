@@ -2,7 +2,9 @@ import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/app/utils/screen_util.dart';
+import 'package:inventario_yummy_sushi/blocs/inventories/create/create_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/views/splash_view.dart';
@@ -20,6 +22,12 @@ class App extends StatelessWidget {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
     return MultiBlocProvider(
       providers: [
+        BlocProvider<SelectAssetsCubit>(
+            create: (_) => di.sl<SelectAssetsCubit>()),
+        BlocProvider<CreateInventoryBloc>(
+            create: (_) => di.sl<CreateInventoryBloc>()),
+        BlocProvider<CreateInventoryBloc>(
+            create: (_) => di.sl<CreateInventoryBloc>()),
         BlocProvider<GetUserBloc>(create: (_) => di.sl<GetUserBloc>()),
         BlocProvider<GetUuidBloc>(create: (_) => di.sl<GetUuidBloc>()),
         BlocProvider<GetInventoriesBloc>(

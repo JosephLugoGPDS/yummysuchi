@@ -12,7 +12,7 @@ class GetInventoriesBloc
     on<FetchInventoriesEvent>(_onFetchInventoriesEvent);
   }
 
-  void _onFetchInventoriesEvent(
+  Future<void> _onFetchInventoriesEvent(
     FetchInventoriesEvent event,
     Emitter<GetInventoriesState> emit,
   ) async {
@@ -44,18 +44,6 @@ class GetInventoriesBloc
         final Map<String, dynamic> inventoryData = responseData[key];
         debugPrint(inventoryData.toString());
         inventories.add(Inventory.fromJson(inventoryData));
-        // final List<dynamic> productsData = inventoryData['products'];
-        // final List<Product> products = [];
-        // for (var j = 0; j < productsData.length; j++) {
-        //   final Map<String, dynamic> productData = productsData[j];
-        //   debugPrint('productData.toString()');
-        //   debugPrint(productData.toString());
-        //   products.add(Product.fromJson(productData));
-        // }
-        // inventories.add(Inventory(
-        //   name: inventoryData['name'],
-        //   products: products,
-        // ));
       }
       return inventories;
     } catch (error) {

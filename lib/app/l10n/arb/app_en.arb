@@ -16,5 +16,8 @@
   "cancel": "Cancelar",
   "name": "Nombre",
   "welcomeNameRequired": "Hola, para empezar, necsitamos guardar tu nombre",
-  "nameRequired": "El nombre es requerido"
+  "nameRequired": "El nombre es requerido",
+  "provider": "Provider",
+  "createInventory": "Crear Inventario",
+  "required": "Requerido"
 }
