@@ -126,43 +126,80 @@ class CreateInventoryScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 20.h),
-                  TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => ThemeDialog(
-                          height: 300.h,
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: GridView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: SvgList.list.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
+                  BlocBuilder<SelectAssetsCubit, String>(
+                    builder: (context, stateString) {
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => ThemeDialog(
+                              height: 300.h,
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: GridView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: SvgList.list.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                ),
+                                itemBuilder: (context, index) =>
+                                    GestureDetector(
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    await context
+                                        .read<SelectAssetsCubit>()
+                                        .selectAsset(SvgList.list[index]);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(3.w),
+                                    decoration: BoxDecoration(
+                                      color: stateString == SvgList.list[index]
+                                          ? AppTheme.accentColor
+                                          : AppTheme.grayTextColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: EdgeInsets.all(8.w),
+                                      child: SvgPicture.asset(
+                                        SvgList.list[index],
+                                        height: 24.w,
+                                        width: 24.w,
+                                        color:
+                                            stateString == SvgList.list[index]
+                                                ? AppTheme.accentColor
+                                                : AppTheme.grayTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () async {
-                                Navigator.pop(context);
-                                await context
-                                    .read<SelectAssetsCubit>()
-                                    .selectAsset(SvgList.list[index]);
-                              },
-                              child: SvgPicture.asset(SvgList.list[index],
-                                  height: 30.w, width: 30.w),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              stateString,
+                              height: 24.w,
+                              width: 24.w,
                             ),
-                          ),
+                            Text(
+                              ' Icono (+)',
+                              style: TextStyle(
+                                color: AppTheme.accentColor,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
-                    child: Text(
-                      'Agregar ícono (+)',
-                      style: TextStyle(
-                        color: AppTheme.accentColor,
-                        fontSize: 14.sp,
-                      ),
-                    ),
                   ),
                   SizedBox(height: 20.h),
                   BlocBuilder<GetUuidBloc, GetUuidState>(
