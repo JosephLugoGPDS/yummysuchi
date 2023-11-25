@@ -3,6 +3,7 @@ import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.da
 import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/is_saved_user_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 
@@ -17,4 +18,5 @@ Future<void> init() async {
   sl.registerLazySingleton<GetInventoriesBloc>(() => GetInventoriesBloc());
   sl.registerLazySingleton<CreateInventoryBloc>(() => CreateInventoryBloc());
   sl.registerLazySingleton<SelectAssetsCubit>(() => SelectAssetsCubit());
+  sl.registerLazySingleton<GetProductsCubit>(() => GetProductsCubit());
 }

@@ -4,6 +4,7 @@ abstract class AppTheme {
   //* Colors
   static const Color primaryColor = Color(0xff5ACAFA);
   static const Color accentColor = Color(0xff0050B3);
+  static const Color secondColor = Color(0xffFA7C1B);
   static const Color grayTextColor = Color(0xff707070);
   static const Color yellowColor = Color(0xffF4E135);
   static const Color greenColor = Color(0xff03A930);

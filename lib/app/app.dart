@@ -5,6 +5,7 @@ import 'package:inventario_yummy_sushi/app/utils/screen_util.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/create/create_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dart';
+import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/views/splash_view.dart';
@@ -30,6 +31,8 @@ class App extends StatelessWidget {
             create: (_) => di.sl<CreateInventoryBloc>()),
         BlocProvider<GetUserBloc>(create: (_) => di.sl<GetUserBloc>()),
         BlocProvider<GetUuidBloc>(create: (_) => di.sl<GetUuidBloc>()),
+        BlocProvider<GetProductsCubit>(
+            create: (_) => di.sl<GetProductsCubit>()),
         BlocProvider<GetInventoriesBloc>(
             create: (_) => di.sl<GetInventoriesBloc>()),
       ],

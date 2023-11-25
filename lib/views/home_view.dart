@@ -4,11 +4,13 @@ import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/gen/assets.gen.dart';
 import 'package:inventario_yummy_sushi/model/inventory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:inventario_yummy_sushi/widgets/custom_speed_dial.dart';
 
 // class HomeView extends StatelessWidget {
 //   const HomeView({super.key});
@@ -73,37 +75,50 @@ class HomeView extends StatelessWidget {
                     (BuildContext context, int index) {
                       final Inventory inventory = inventories[index];
                       return Card(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 5.h),
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                inventory.name,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                '${inventory.products?.length ?? 0}',
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            ],
-                          ),
-                          leading: Padding(
-                            padding: EdgeInsets.fromLTRB(5.w, 12.h, 5.w, 12.h),
-                            child: SvgPicture.asset(
-                              inventory.asset,
-                              colorFilter: const ColorFilter.mode(
-                                  AppTheme.accentColor, BlendMode.srcIn),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  inventory.name,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '${inventory.products?.length ?? 0}',
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ],
                             ),
-                          ),
-                          trailing: const Icon(Icons.more_vert,
-                              color: AppTheme.accentColor),
-                        ),
-                      );
+                            leading: Padding(
+                              padding:
+                                  EdgeInsets.fromLTRB(5.w, 12.h, 5.w, 12.h),
+                              child: SvgPicture.asset(
+                                inventory.asset,
+                                colorFilter: const ColorFilter.mode(
+                                    AppTheme.accentColor, BlendMode.srcIn),
+                              ),
+                            ),
+                            trailing: CustomDialActions(
+                              onProductsPressed: () {
+                                context
+                                    .read<GetProductsCubit>()
+                                    .loadProducts(inventory.products ?? []);
+                                Navigator.of(context).pushNamed(
+                                  AppRoutes.productsScreen,
+                                );
+                              },
+                              onShowPressed: () {
+                                // Navigator.of(context).pushNamed(
+                                //     AppRoutes.showInventoryScreen,
+                                //     arguments: inventory);
+                              },
+                            ),
+                          ));
                     },
                     childCount: inventories.length,
                   ),
