@@ -4,14 +4,11 @@ import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
-import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/gen/assets.gen.dart';
 import 'package:inventario_yummy_sushi/model/inventory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:inventario_yummy_sushi/injector_container.dart' as di;
 
 // class HomeView extends StatelessWidget {
 //   const HomeView({super.key});
@@ -100,7 +97,7 @@ class HomeView extends StatelessWidget {
                             child: SvgPicture.asset(
                               inventory.asset,
                               colorFilter: const ColorFilter.mode(
-                                  AppTheme.primaryColor, BlendMode.srcIn),
+                                  AppTheme.accentColor, BlendMode.srcIn),
                             ),
                           ),
                           trailing: const Icon(Icons.more_vert,
