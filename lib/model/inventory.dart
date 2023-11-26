@@ -33,6 +33,7 @@ class Product {
   int stock;
   int stockMax;
   int stockMin;
+  List<String> providers;
 
   Product({
     required this.date,
@@ -41,6 +42,7 @@ class Product {
     required this.stock,
     required this.stockMax,
     required this.stockMin,
+    required this.providers,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) =>
@@ -51,6 +53,11 @@ class Product {
 List<Inventory> getInventoriesFromJson(String jsonString) {
   final jsonData = json.decode(jsonString);
   return List<Inventory>.from(jsonData.map((x) => Inventory.fromJson(x)));
+}
+
+List<dynamic> getProductsToJson(List<Product> products) {
+  final List<dynamic> jsonData = products.map((x) => x.toJson()).toList();
+  return jsonData;
 }
 
 String getInventoriesToJson(List<Inventory> inventories) {

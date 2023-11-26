@@ -19,5 +19,12 @@
   "nameRequired": "El nombre es requerido",
   "provider": "Provider",
   "createInventory": "Crear Inventario",
-  "required": "Requerido"
+  "required": "Requerido",
+  "stock": "Stock",
+  "inventoryName": "Nombre del inventario",
+  "stockMustBeANumber": "El stock debe ser un número",
+  "stockMin": "Stock mínimo",
+  "stockMax": "Stock máximo",
+  "requiredField": "Campo requerido",
+  "selectAreProviders": "Selecciona los proveedores"
 }

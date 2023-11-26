@@ -42,7 +42,7 @@ class ProductsView extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(AppRoutes.createInventoryScreen);
+                      .pushNamed(AppRoutes.createProductsScreen);
                 },
                 icon: const Icon(Icons.add, color: Colors.white),
               ),

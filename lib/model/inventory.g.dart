@@ -9,9 +9,8 @@ part of 'inventory.dart';
 Inventory _$InventoryFromJson(Map<String, dynamic> json) => Inventory(
       name: json['name'] as String,
       products: (json['products'] as List<dynamic>?)
-              ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+          ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
+          .toList(),
       providers:
           (json['providers'] as List<dynamic>).map((e) => e as String).toList(),
       description: json['description'] as String?,
@@ -33,6 +32,8 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       stock: json['stock'] as int,
       stockMax: json['stockMax'] as int,
       stockMin: json['stockMin'] as int,
+      providers:
+          (json['providers'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
@@ -42,4 +43,5 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'stock': instance.stock,
       'stockMax': instance.stockMax,
       'stockMin': instance.stockMin,
+      'providers': instance.providers,
     };
