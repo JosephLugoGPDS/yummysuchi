@@ -68,18 +68,94 @@ class ProductsView extends StatelessWidget {
                             horizontal: 10.w, vertical: 5.h),
                         child: ListTile(
                           title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(
-                                product.name,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'max: ',
+                                      style: const TextStyle(
+                                          color: AppTheme.grayTextColor),
+                                      children: [
+                                        TextSpan(
+                                          text: '${product.stockMax}',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'min: ',
+                                      style: const TextStyle(
+                                          color: AppTheme.grayTextColor),
+                                      children: [
+                                        TextSpan(
+                                          text: '${product.stockMin}',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                '${product.stock}',
-                                style: const TextStyle(color: Colors.black),
+                              SizedBox(width: 15.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.name,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    for (String provider in product.providers)
+                                      Text(
+                                        provider,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: AppTheme.grayTextColor,
+                                            fontSize: 10.sp),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              Column(
+                                children: [
+                                  Text(
+                                    '${product.stock}',
+                                    style: TextStyle(
+                                        color: product.stock <
+                                                    product.stockMin ||
+                                                product.stock > product.stockMax
+                                            ? Colors.red
+                                            : AppTheme.secondColor,
+                                        fontSize: 20.sp),
+                                  ),
+                                  const Text(
+                                    'und.',
+                                    style: TextStyle(
+                                        color: AppTheme.grayTextColor),
+                                  ),
+                                  const Text(
+                                    'Stock',
+                                    style: TextStyle(
+                                        color: AppTheme.grayTextColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
