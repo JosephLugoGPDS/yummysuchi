@@ -2,6 +2,7 @@ import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/app/utils/screen_util.dart';
+import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/create/create_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
@@ -47,6 +48,8 @@ class App extends StatelessWidget {
             create: (_) => di.sl<CreateProductBloc>()),
         BlocProvider<GetCurrentInventory>(
             create: (_) => di.sl<GetCurrentInventory>()),
+        BlocProvider<GetHistoriesBloc>(
+            create: (_) => di.sl<GetHistoriesBloc>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

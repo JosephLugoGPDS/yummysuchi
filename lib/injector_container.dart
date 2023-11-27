@@ -1,3 +1,4 @@
+import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/create/create_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
@@ -29,4 +30,5 @@ Future<void> init() async {
       () => ProvidersProductControllerCubit());
   sl.registerLazySingleton<CreateProductBloc>(() => CreateProductBloc());
   sl.registerLazySingleton<GetCurrentInventory>(() => GetCurrentInventory());
+  sl.registerLazySingleton<GetHistoriesBloc>(() => GetHistoriesBloc());
 }

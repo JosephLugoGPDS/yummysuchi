@@ -3,10 +3,12 @@ import 'package:inventario_yummy_sushi/app/extensions/size_extension.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
+import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cubit.dart';
+import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/gen/assets.gen.dart';
 import 'package:inventario_yummy_sushi/model/inventory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,9 +123,17 @@ class HomeView extends StatelessWidget {
                                 );
                               },
                               onShowPressed: () {
-                                // Navigator.of(context).pushNamed(
-                                //     AppRoutes.showInventoryScreen,
-                                //     arguments: inventory);
+                                context
+                                    .read<GetCurrentInventory>()
+                                    .loadInventory(inventory.name);
+                                context.read<GetHistoriesBloc>().add(
+                                    FetchHistoriesEvent(
+                                        uuid: (context.read<GetUuidBloc>().state
+                                                as GetUuidSuccess)
+                                            .uuid,
+                                        inventory: inventory.name));
+                                Navigator.of(context)
+                                    .pushNamed(AppRoutes.historyListScreen);
                               },
                             ),
                           ));
