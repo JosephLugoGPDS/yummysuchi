@@ -38,18 +38,9 @@ class GetHistoriesBloc extends Bloc<GetHistoriesEvent, GetHistoriesState> {
       List<History> histories = [];
       final Map<String, dynamic> response =
           historySnapshot.data() as Map<String, dynamic>;
-      debugPrint('responseData response: ${response.toString()}');
       final List<dynamic> responseData = response[inventory];
 
-      debugPrint('responseData: ${responseData.toString()}');
-
       histories = History.getHistoriesFromJson(responseData);
-      // for (var i = 0; i < responseData.length; i++) {
-      //   final String key = responseData.keys.elementAt(i);
-      //   final Map<String, dynamic> inventoryData = responseData[key];
-      //   debugPrint(inventoryData.toString());
-      //   histories.add(History.fromJson(inventoryData));
-      // }
       return histories;
     } catch (error) {
       debugPrint(error.toString());

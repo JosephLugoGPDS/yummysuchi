@@ -15,6 +15,8 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
   void _onCreateNewProductEvent(
       CreateNewProductEvent event, Emitter<CreateProductState> emit) async {
     emit(const CreateProductLoading());
+
+    // Get inventory
     CollectionReference inventoriesCollection =
         FirebaseFirestore.instance.collection('inventories');
     DocumentSnapshot inventorySnapshot =
@@ -29,8 +31,20 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
     inventory = inventorySnapshot.data() as Map<String, dynamic>;
     debugPrint('inventory: ${inventory[event.inventory]}');
     final inventoryModel = Inventory.fromJson(inventory[event.inventory]);
+    // Get histories
+    CollectionReference historiesCollection =
+        FirebaseFirestore.instance.collection('history');
+    DocumentSnapshot historySnapshot =
+        await historiesCollection.doc(event.uuid).get();
 
+    debugPrint('historySnapshot: ${historySnapshot.data()}');
+    Map<String, dynamic>? history;
+
+    history = historySnapshot.data() as Map<String, dynamic>;
+    debugPrint('history: ${history[event.inventory]}');
+    final List<dynamic>? historyData = history[event.inventory];
     if (inventoryModel.providers.isNotEmpty) {
+      //add new product
       inventory[inventoryModel.name] = {
         'name': inventoryModel.name,
         'description': inventoryModel.description ?? '',
@@ -49,10 +63,23 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
             'providers': event.providers,
             'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
           }
-        ]
+        ],
       };
+      //add new history
+      history[inventoryModel.name] = [
+        ...(historyData ?? []),
+        {
+          'name': event.productName,
+          'isUp': true,
+          'after': event.stock,
+          'before': 0,
+          'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        }
+      ];
+
       try {
         await inventoriesCollection.doc(event.uuid).update(inventory);
+        await historiesCollection.doc(event.uuid).update(history);
         emit(const CreateProductSuccess());
       } catch (error) {
         emit(CreateProductFailure(error: error.toString()));
