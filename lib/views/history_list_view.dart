@@ -156,34 +156,13 @@ class HistoryListView extends StatelessWidget {
                                 ),
                               ),
                               const Spacer(),
-                              Column(
-                                children: [
-                                  const Text(
-                                    'Anterior',
-                                    style: TextStyle(
-                                        color: AppTheme.grayTextColor),
-                                  ),
-                                  Text(
-                                    '${history.before}',
-                                    style: const TextStyle(
-                                      color: AppTheme.grayTextColor,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Nuevo',
-                                    style: TextStyle(
-                                      color: AppTheme.grayTextColor,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${history.after}',
-                                    style: TextStyle(
-                                        color: history.isUp
-                                            ? AppTheme.greenColor
-                                            : AppTheme.redColor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              Text(
+                                '${history.isUp ? '(+)  ' : '(-)  '}${history.isUp ? (history.after - history.before) : (history.before - history.after)}',
+                                style: TextStyle(
+                                    color: history.isUp
+                                        ? AppTheme.greenColor
+                                        : AppTheme.redColor,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
