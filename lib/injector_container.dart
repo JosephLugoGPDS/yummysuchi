@@ -7,9 +7,11 @@ import 'package:inventario_yummy_sushi/blocs/is_saved_user_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inventario_yummy_sushi/blocs/pdf/generated_pdf_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/create/create_product_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/products/get_current_product_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/products_controller_cubit.dart';
+import 'package:inventario_yummy_sushi/blocs/products/update/update_product_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 
@@ -33,4 +35,7 @@ Future<void> init() async {
   sl.registerLazySingleton<GetCurrentInventory>(() => GetCurrentInventory());
   sl.registerLazySingleton<GetHistoriesBloc>(() => GetHistoriesBloc());
   sl.registerLazySingleton<GeneratedPdfCubit>(() => GeneratedPdfCubit());
+  sl.registerLazySingleton<GetCurrentProductCubit>(
+      () => GetCurrentProductCubit());
+  sl.registerLazySingleton<UpdateProductBloc>(() => UpdateProductBloc());
 }

@@ -9,9 +9,11 @@ import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.da
 import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/pdf/generated_pdf_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/create/create_product_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/products/get_current_product_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/products_controller_cubit.dart';
+import 'package:inventario_yummy_sushi/blocs/products/update/update_product_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/user/get_user_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/views/splash_view.dart';
@@ -53,6 +55,10 @@ class App extends StatelessWidget {
             create: (_) => di.sl<GetHistoriesBloc>()),
         BlocProvider<GeneratedPdfCubit>(
             create: (_) => di.sl<GeneratedPdfCubit>()),
+        BlocProvider<GetCurrentProductCubit>(
+            create: (_) => di.sl<GetCurrentProductCubit>()),
+        BlocProvider<UpdateProductBloc>(
+            create: (_) => di.sl<UpdateProductBloc>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
