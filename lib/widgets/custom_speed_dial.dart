@@ -7,13 +7,13 @@ class CustomDialActions extends StatelessWidget {
   const CustomDialActions({
     super.key,
     this.onDeletePressed,
-    this.onEditPressed,
+    this.onSharePressed,
     this.onProductsPressed,
     this.onShowPressed,
   });
 
   final void Function()? onProductsPressed;
-  final void Function()? onEditPressed;
+  final void Function()? onSharePressed;
   final void Function()? onShowPressed;
   final void Function()? onDeletePressed;
 
@@ -34,6 +34,24 @@ class CustomDialActions extends StatelessWidget {
       closeManually: false,
       direction: SpeedDialDirection.left,
       children: [
+        SpeedDialChild(
+          elevation: 0,
+          child: Container(
+            width: 28.w,
+            height: 28.w,
+            decoration: const BoxDecoration(
+              color: AppTheme.grayTextColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.share,
+              color: Colors.black,
+              size: 20.w,
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          onTap: onSharePressed,
+        ),
         SpeedDialChild(
           elevation: 0,
           child: Container(

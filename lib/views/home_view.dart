@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
 import 'package:inventario_yummy_sushi/app/extensions/size_extension.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
@@ -6,6 +7,7 @@ import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/pdf/generated_pdf_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
@@ -135,6 +137,21 @@ class HomeView extends StatelessWidget {
                                 Navigator.of(context)
                                     .pushNamed(AppRoutes.historyListScreen);
                               },
+                              onSharePressed: () => context
+                                  .read<GeneratedPdfCubit>()
+                                  .generatePdf(
+                                      date: DateFormat('yyyy-MM-dd')
+                                          .format(DateTime.now()),
+                                      inventory: inventory.name,
+                                      headers: [
+                                        'Producto',
+                                        'Stock',
+                                      ],
+                                      data: inventories[index]
+                                          .products!
+                                          .map((e) =>
+                                              [e.name, e.stock.toString()])
+                                          .toList()),
                             ),
                           ));
                     },
