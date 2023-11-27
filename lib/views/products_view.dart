@@ -70,8 +70,8 @@ class ProductsView extends StatelessWidget {
             },
             child: SliverAppBar(
               foregroundColor: Colors.white,
-              title:
-                  Text(l10n.app, style: const TextStyle(color: Colors.white)),
+              title: Text(context.read<GetCurrentInventory>().state,
+                  style: const TextStyle(color: Colors.white)),
               floating: true,
               backgroundColor: AppTheme.secondColor,
               elevation: 0,
@@ -137,7 +137,45 @@ class ProductsView extends StatelessWidget {
                                         ThemeTextFormField(
                                           textEditingController:
                                               stockController,
-                                          label: l10n.name,
+                                          label: 'Stock',
+                                          onChanged: (currentStock) {
+                                            if (currentStock.isNotEmpty) {
+                                              if (int.parse(currentStock) >
+                                                  product.stockMax) {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'El stock a sobrepasado el stock máximo de: ${product.stockMax}'),
+                                                    backgroundColor:
+                                                        AppTheme.redColor,
+                                                  ),
+                                                );
+                                              }
+                                              if (int.parse(currentStock) <
+                                                  product.stockMin) {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Column(
+                                                      children: List.generate(
+                                                        product
+                                                            .providers.length,
+                                                        (index) => Text(
+                                                            '${index + 1}) El stock es menor a ${product.stockMin}, avisar a ${product.providers[index]}'),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        AppTheme.redColor,
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          },
                                         ),
                                         TextButton(
                                           onPressed: () async {

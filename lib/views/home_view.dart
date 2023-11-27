@@ -80,85 +80,103 @@ class HomeView extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       final Inventory inventory = inventories[index];
-                      return Card(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 5.h),
-                          child: ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(0, 6.h, 15.w, 6.h),
-                                  child: SvgPicture.asset(
-                                    inventory.asset,
-                                    height: 20.w,
-                                    width: 20.w,
-                                    colorFilter: const ColorFilter.mode(
-                                        AppTheme.accentColor, BlendMode.srcIn),
+                      return GestureDetector(
+                        onTap: () {
+                          context
+                              .read<GetProductsCubit>()
+                              .loadProducts(inventory.products ?? []);
+                          context
+                              .read<GetSelectionProvidersCubit>()
+                              .loadProviders(inventory.providers);
+                          context
+                              .read<GetCurrentInventory>()
+                              .loadInventory(inventory.name);
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.productsScreen,
+                          );
+                        },
+                        child: Card(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10.w, vertical: 5.h),
+                            child: ListTile(
+                              titleAlignment: ListTileTitleAlignment.center,
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(0, 6.h, 15.w, 6.h),
+                                    child: SvgPicture.asset(
+                                      inventory.asset,
+                                      height: 20.w,
+                                      width: 20.w,
+                                      colorFilter: const ColorFilter.mode(
+                                          AppTheme.accentColor,
+                                          BlendMode.srcIn),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  inventory.name,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '${inventory.products?.length ?? 0}',
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            // leading:
-                            trailing: CustomDialActions(
-                              onProductsPressed: () {
-                                context
-                                    .read<GetProductsCubit>()
-                                    .loadProducts(inventory.products ?? []);
-                                context
-                                    .read<GetSelectionProvidersCubit>()
-                                    .loadProviders(inventory.providers);
-                                context
-                                    .read<GetCurrentInventory>()
-                                    .loadInventory(inventory.name);
-                                Navigator.of(context).pushNamed(
-                                  AppRoutes.productsScreen,
-                                );
-                              },
-                              onShowPressed: () {
-                                context
-                                    .read<GetCurrentInventory>()
-                                    .loadInventory(inventory.name);
-                                context.read<GetHistoriesBloc>().add(
-                                    FetchHistoriesEvent(
-                                        uuid: (context.read<GetUuidBloc>().state
-                                                as GetUuidSuccess)
-                                            .uuid,
-                                        inventory: inventory.name));
-                                Navigator.of(context)
-                                    .pushNamed(AppRoutes.historyListScreen);
-                              },
-                              onSharePressed: () => context
-                                  .read<GeneratedPdfCubit>()
-                                  .generatePdf(
-                                      date: DateFormat('yyyy-MM-dd')
-                                          .format(DateTime.now()),
-                                      inventory: inventory.name,
-                                      headers: [
-                                        'Producto',
-                                        'Stock',
-                                      ],
-                                      data: inventories[index]
-                                          .products!
-                                          .map((e) =>
-                                              [e.name, e.stock.toString()])
-                                          .toList()),
-                            ),
-                          ));
+                                  Text(
+                                    inventory.name,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${inventory.products?.length ?? 0}',
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              // leading:
+                              trailing: CustomDialActions(
+                                onProductsPressed: () {
+                                  context
+                                      .read<GetProductsCubit>()
+                                      .loadProducts(inventory.products ?? []);
+                                  context
+                                      .read<GetSelectionProvidersCubit>()
+                                      .loadProviders(inventory.providers);
+                                  context
+                                      .read<GetCurrentInventory>()
+                                      .loadInventory(inventory.name);
+                                  Navigator.of(context).pushNamed(
+                                    AppRoutes.productsScreen,
+                                  );
+                                },
+                                onShowPressed: () {
+                                  context
+                                      .read<GetCurrentInventory>()
+                                      .loadInventory(inventory.name);
+                                  context.read<GetHistoriesBloc>().add(
+                                      FetchHistoriesEvent(
+                                          uuid: (context
+                                                  .read<GetUuidBloc>()
+                                                  .state as GetUuidSuccess)
+                                              .uuid,
+                                          inventory: inventory.name));
+                                  Navigator.of(context)
+                                      .pushNamed(AppRoutes.historyListScreen);
+                                },
+                                onSharePressed: () => context
+                                    .read<GeneratedPdfCubit>()
+                                    .generatePdf(
+                                        date: DateFormat('yyyy-MM-dd')
+                                            .format(DateTime.now()),
+                                        inventory: inventory.name,
+                                        headers: [
+                                          'Producto',
+                                          'Stock',
+                                        ],
+                                        data: inventories[index]
+                                            .products!
+                                            .map((e) =>
+                                                [e.name, e.stock.toString()])
+                                            .toList()),
+                              ),
+                            )),
+                      );
                     },
                     childCount: inventories.length,
                   ),
