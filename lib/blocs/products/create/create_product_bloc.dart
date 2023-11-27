@@ -31,18 +31,7 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
     inventory = inventorySnapshot.data() as Map<String, dynamic>;
     debugPrint('inventory: ${inventory[event.inventory]}');
     final inventoryModel = Inventory.fromJson(inventory[event.inventory]);
-    // Get histories
-    CollectionReference historiesCollection =
-        FirebaseFirestore.instance.collection('history');
-    DocumentSnapshot historySnapshot =
-        await historiesCollection.doc(event.uuid).get();
 
-    debugPrint('historySnapshot: ${historySnapshot.data()}');
-    Map<String, dynamic>? history;
-
-    history = historySnapshot.data() as Map<String, dynamic>;
-    debugPrint('history: ${history[event.inventory]}');
-    final List<dynamic>? historyData = history[event.inventory];
     if (inventoryModel.providers.isNotEmpty) {
       //add new product
       inventory[inventoryModel.name] = {
@@ -66,20 +55,46 @@ class CreateProductBloc extends Bloc<CreateProductEvent, CreateProductState> {
         ],
       };
       //add new history
-      history[inventoryModel.name] = [
-        ...(historyData ?? []),
-        {
-          'name': event.productName,
-          'isUp': true,
-          'after': event.stock,
-          'before': 0,
-          'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        }
-      ];
+      // Get histories
+      CollectionReference historiesCollection =
+          FirebaseFirestore.instance.collection('history');
+      DocumentSnapshot historySnapshot =
+          await historiesCollection.doc(event.uuid).get();
+      Map<String, dynamic> history = <String, dynamic>{};
+      List<dynamic>? historyData = [];
+      if (historySnapshot.exists) {
+        debugPrint('historySnapshot: ${historySnapshot.data()}');
+        history = historySnapshot.data() as Map<String, dynamic>;
+        debugPrint('history: ${history[event.inventory]}');
+        historyData = history[event.inventory];
+        history[inventoryModel.name] = [
+          ...(historyData ?? []),
+          {
+            'name': event.productName,
+            'isUp': true,
+            'after': event.stock,
+            'before': 0,
+            'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          }
+        ];
+        await historiesCollection.doc(event.uuid).update(history);
+      } else {
+        history = {
+          inventoryModel.name: [
+            {
+              'name': event.productName,
+              'isUp': true,
+              'after': event.stock,
+              'before': 0,
+              'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            }
+          ]
+        };
+        await historiesCollection.doc(event.uuid).set(history);
+      }
 
       try {
         await inventoriesCollection.doc(event.uuid).update(inventory);
-        await historiesCollection.doc(event.uuid).update(history);
         emit(const CreateProductSuccess());
       } catch (error) {
         emit(CreateProductFailure(error: error.toString()));
