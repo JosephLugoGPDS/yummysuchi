@@ -18,7 +18,7 @@ import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  sl.registerLazySingleton<IsSavedUserCubit>(
+  sl.registerFactory<IsSavedUserCubit>(
       () => IsSavedUserCubit()..loadSavedUser());
   sl.registerLazySingleton<GetUuidBloc>(
       () => GetUuidBloc()..add(const FetchUuidEvent()));

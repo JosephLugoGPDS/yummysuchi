@@ -22,7 +22,7 @@ abstract class AppTheme {
         background: Colors.transparent,
         onBackground: yellowColor,
         brightness: Brightness.light,
-        surface: primaryColor,
+        surface: Colors.white,
         onSurface: accentColor,
       ),
       textTheme: const TextTheme(),

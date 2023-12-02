@@ -63,6 +63,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: navigatorKey,
         theme: AppTheme.themeMobile(context).copyWith(
+          useMaterial3: true,
           scrollbarTheme: ScrollbarThemeData(
             thumbColor: MaterialStateProperty.all<Color>(AppTheme.accentColor),
             minThumbLength: 40,
