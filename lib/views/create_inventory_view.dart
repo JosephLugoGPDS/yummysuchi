@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inventario_yummy_sushi/app/constants/app_theme.dart';
-import 'package:inventario_yummy_sushi/app/constants/svg_list.dart';
 import 'package:inventario_yummy_sushi/app/extensions/size_extension.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
+import 'package:inventario_yummy_sushi/app/utils/data_util.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/create/create_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/providers_controller_cubit.dart';
@@ -12,7 +11,6 @@ import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dar
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/widgets/loader_dialog.dart';
 import 'package:inventario_yummy_sushi/widgets/theme_button_gradient.dart';
-import 'package:inventario_yummy_sushi/widgets/theme_dialog.dart';
 import 'package:inventario_yummy_sushi/widgets/theme_text_form_field.dart';
 
 class CreateInventoryView extends StatelessWidget {
@@ -41,12 +39,7 @@ class CreateInventoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     return Scaffold(
-        appBar: AppBar(
-          foregroundColor: Colors.white,
-          backgroundColor: AppTheme.accentColor,
-          title: Text(l10n.createInventory),
-          elevation: 0,
-        ),
+        backgroundColor: AppTheme.backgroundColor,
         body: BlocListener<CreateInventoryBloc, CreateInventoryState>(
           listener: (context, stateCreateInventoryState) {
             debugPrint('stateCreateInventoryState: $stateCreateInventoryState');
@@ -72,6 +65,32 @@ class CreateInventoryScreen extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 25.h + MediaQuery.of(context).padding.top,
+                      bottom: 0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.createInventory,
+                          style: TextStyle(
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.accentColor,
+                          ),
+                        ),
+                        Text(
+                          l10n.app,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w200),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 40.h),
                   ThemeTextFormField(
                     textEditingController: nameController,
@@ -101,6 +120,17 @@ class CreateInventoryScreen extends StatelessWidget {
                                     child: ThemeTextFormField(
                                       textEditingController: stateProviders[i],
                                       label: '${l10n.provider} (${i + 1})*',
+                                      rightIcon: stateProviders.length > 1
+                                          ? Icons.close
+                                          : null,
+                                      onRightTap: () {
+                                        if (stateProviders.length > 1) {
+                                          print('remove');
+                                          context
+                                              .read<ProvidersControllerCubit>()
+                                              .removeProvider(i);
+                                        }
+                                      },
                                     ),
                                   ),
                               ],
@@ -125,79 +155,61 @@ class CreateInventoryScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'Selecciona un ícono para tu inventario',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w200),
+                  ),
                   BlocBuilder<SelectAssetsCubit, String>(
                     builder: (context, stateString) {
-                      return GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => ThemeDialog(
-                              height: 300.h,
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: GridView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: SvgList.list.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: DataUtil.iconMap.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                        ),
+                        itemBuilder: (context, index) {
+                          final String key =
+                              DataUtil.iconMap.keys.elementAt(index);
+                          return GestureDetector(
+                            onTap: () async {
+                              await context
+                                  .read<SelectAssetsCubit>()
+                                  .selectAsset(key);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(3.w),
+                              decoration: BoxDecoration(
+                                color: stateString == key
+                                    ? AppTheme.accentColor
+                                    : AppTheme.grayTextColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                itemBuilder: (context, index) =>
-                                    GestureDetector(
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                    await context
-                                        .read<SelectAssetsCubit>()
-                                        .selectAsset(SvgList.list[index]);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(3.w),
-                                    decoration: BoxDecoration(
-                                      color: stateString == SvgList.list[index]
-                                          ? AppTheme.accentColor
-                                          : AppTheme.grayTextColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      padding: EdgeInsets.all(8.w),
-                                      child: SvgPicture.asset(
-                                        SvgList.list[index],
-                                        height: 24.w,
-                                        width: 24.w,
-                                        color:
-                                            stateString == SvgList.list[index]
-                                                ? AppTheme.accentColor
-                                                : AppTheme.grayTextColor,
-                                      ),
-                                    ),
-                                  ),
+                                padding: EdgeInsets.all(8.w),
+                                child: Icon(
+                                  DataUtil.iconMap[key]['iconPrimary']
+                                      ['iconData'] as IconData,
+                                  size: 24.w,
+                                  color: stateString == key
+                                      ? AppTheme.accentColor
+                                      : AppTheme.grayTextColor,
                                 ),
                               ),
                             ),
                           );
                         },
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              stateString,
-                              height: 24.w,
-                              width: 24.w,
-                            ),
-                            Text(
-                              ' Icono (+)',
-                              style: TextStyle(
-                                color: AppTheme.accentColor,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
-                        ),
                       );
                     },
                   ),

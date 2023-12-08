@@ -8,4 +8,10 @@ class ProvidersControllerCubit extends Cubit<List<TextEditingController>> {
     final TextEditingController providersLoading = TextEditingController();
     emit([...state, providersLoading]);
   }
+
+  Future<void> removeProvider(int index) async {
+    final List<TextEditingController> providers = state;
+    providers.removeAt(index);
+    emit([...providers]);
+  }
 }

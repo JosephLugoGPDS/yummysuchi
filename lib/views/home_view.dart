@@ -4,6 +4,7 @@ import 'package:inventario_yummy_sushi/app/extensions/size_extension.dart';
 import 'package:inventario_yummy_sushi/app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
+import 'package:inventario_yummy_sushi/app/utils/data_util.dart';
 import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
@@ -134,13 +135,22 @@ class HomeView extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, 6.h, 15.w, 6.h),
-                                child: SvgPicture.asset(
-                                  inventory.asset,
-                                  height: 20.w,
-                                  width: 20.w,
-                                  colorFilter: const ColorFilter.mode(
-                                      AppTheme.accentColor, BlendMode.srcIn),
-                                ),
+                                child: inventory.asset.contains('svg')
+                                    ? SvgPicture.asset(
+                                        inventory.asset,
+                                        height: 20.w,
+                                        width: 20.w,
+                                        colorFilter: const ColorFilter.mode(
+                                            AppTheme.accentColor,
+                                            BlendMode.srcIn),
+                                      )
+                                    : Icon(
+                                        DataUtil.iconMap[inventory.asset]
+                                                ['iconPrimary']['iconData'] ??
+                                            Icons.error,
+                                        size: 20.w,
+                                        color: AppTheme.accentColor,
+                                      ),
                               ),
                               Expanded(
                                 child: Column(
