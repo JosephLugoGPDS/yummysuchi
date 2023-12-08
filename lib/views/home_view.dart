@@ -17,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inventario_yummy_sushi/widgets/custom_speed_dial.dart';
+import 'package:inventario_yummy_sushi/widgets/theme_button_gradient.dart';
 
 // class HomeView extends StatelessWidget {
 //   const HomeView({super.key});
@@ -39,29 +40,50 @@ class HomeView extends StatelessWidget {
     debugPrint('build HomeScreen');
     final AppLocalizations l10n = context.l10n;
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            title: Text(l10n.app, style: const TextStyle(color: Colors.white)),
-            floating: true,
-            backgroundColor: AppTheme.accentColor,
-            elevation: 0,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(AppRoutes.createInventoryScreen);
-                },
-                icon: const Icon(Icons.add, color: Colors.white),
-              ),
-            ],
-          ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: 20.h,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: 25.h + MediaQuery.of(context).padding.top,
+                bottom: 0,
+                left: 25.w,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.app,
+                    style: TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          BlocBuilder<GetInventoriesBloc, GetInventoriesState>(
+              builder: (context, stateGetInventoriesState) {
+            if (stateGetInventoriesState is GetInventoriesLoaded) {
+              return SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 0, left: 25.w, bottom: 15.h),
+                  child: Text(
+                    '${stateGetInventoriesState.inventories.length} ${stateGetInventoriesState.inventories.length == 1 ? 'Inventario' : 'Inventarios'}',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w200),
+                  ),
+                ),
+              );
+            }
+            return SliverToBoxAdapter(child: SizedBox(height: 30.h));
+          }),
           BlocBuilder<GetInventoriesBloc, GetInventoriesState>(
             builder: (context, stateGetInventoriesState) {
               debugPrint('stateGetInventoriesState: $stateGetInventoriesState');
@@ -95,87 +117,70 @@ class HomeView extends StatelessWidget {
                             AppRoutes.productsScreen,
                           );
                         },
-                        child: Card(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 10.w, vertical: 5.h),
-                            child: ListTile(
-                              titleAlignment: ListTileTitleAlignment.center,
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.fromLTRB(0, 6.h, 15.w, 6.h),
-                                    child: SvgPicture.asset(
-                                      inventory.asset,
-                                      height: 20.w,
-                                      width: 20.w,
-                                      colorFilter: const ColorFilter.mode(
-                                          AppTheme.accentColor,
-                                          BlendMode.srcIn),
+                        child: Container(
+                          clipBehavior: Clip.none,
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.w),
+                            ),
+                          ),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 27.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 10.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 6.h, 15.w, 6.h),
+                                child: SvgPicture.asset(
+                                  inventory.asset,
+                                  height: 20.w,
+                                  width: 20.w,
+                                  colorFilter: const ColorFilter.mode(
+                                      AppTheme.accentColor, BlendMode.srcIn),
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      inventory.name,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                  Text(
-                                    inventory.name,
-                                    style: TextStyle(
+                                    Text(
+                                      inventory.description ?? '',
+                                      maxLines: 2,
+                                      style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    '${inventory.products?.length ?? 0}',
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ],
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '${inventory.products?.length ?? 0} ${inventory.products?.length == 1 ? ' Producto' : ' Productos'}',
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                              // leading:
-                              trailing: CustomDialActions(
-                                onProductsPressed: () {
-                                  context
-                                      .read<GetProductsCubit>()
-                                      .loadProducts(inventory.products ?? []);
-                                  context
-                                      .read<GetSelectionProvidersCubit>()
-                                      .loadProviders(inventory.providers);
-                                  context
-                                      .read<GetCurrentInventory>()
-                                      .loadInventory(inventory.name);
-                                  Navigator.of(context).pushNamed(
-                                    AppRoutes.productsScreen,
-                                  );
-                                },
-                                onShowPressed: () {
-                                  context
-                                      .read<GetCurrentInventory>()
-                                      .loadInventory(inventory.name);
-                                  context.read<GetHistoriesBloc>().add(
-                                      FetchHistoriesEvent(
-                                          uuid: (context
-                                                  .read<GetUuidBloc>()
-                                                  .state as GetUuidSuccess)
-                                              .uuid,
-                                          inventory: inventory.name));
-                                  Navigator.of(context)
-                                      .pushNamed(AppRoutes.historyListScreen);
-                                },
-                                onSharePressed: () => context
-                                    .read<GeneratedPdfCubit>()
-                                    .generatePdf(
-                                        date: DateFormat('yyyy-MM-dd')
-                                            .format(DateTime.now()),
-                                        inventory: inventory.name,
-                                        headers: [
-                                          'Producto',
-                                          'Stock',
-                                        ],
-                                        data: inventories[index]
-                                            .products!
-                                            .map((e) =>
-                                                [e.name, e.stock.toString()])
-                                            .toList()),
-                              ),
-                            )),
+                            ],
+                          ),
+                        ),
                       );
                     },
                     childCount: inventories.length,
@@ -195,6 +200,21 @@ class HomeView extends StatelessWidget {
                 );
               }
             },
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: 15.h,
+                bottom: 15.h,
+              ),
+              child: ThemeButtonGradient(
+                title: 'Crear un nuevo inventario',
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(AppRoutes.createInventoryScreen);
+                },
+              ),
+            ),
           ),
         ],
       ),
