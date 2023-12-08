@@ -146,13 +146,71 @@ class HomeView extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      inventory.name,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.bold),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          inventory.name,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        CustomDialActions(
+                                          onProductsPressed: () {
+                                            context
+                                                .read<GetProductsCubit>()
+                                                .loadProducts(
+                                                    inventory.products ?? []);
+                                            context
+                                                .read<
+                                                    GetSelectionProvidersCubit>()
+                                                .loadProviders(
+                                                    inventory.providers);
+                                            context
+                                                .read<GetCurrentInventory>()
+                                                .loadInventory(inventory.name);
+                                            Navigator.of(context).pushNamed(
+                                              AppRoutes.productsScreen,
+                                            );
+                                          },
+                                          onShowPressed: () {
+                                            context
+                                                .read<GetCurrentInventory>()
+                                                .loadInventory(inventory.name);
+                                            context
+                                                .read<GetHistoriesBloc>()
+                                                .add(FetchHistoriesEvent(
+                                                    uuid: (context
+                                                                .read<GetUuidBloc>()
+                                                                .state
+                                                            as GetUuidSuccess)
+                                                        .uuid,
+                                                    inventory: inventory.name));
+                                            Navigator.of(context).pushNamed(
+                                                AppRoutes.historyListScreen);
+                                          },
+                                          onSharePressed: () => context
+                                              .read<GeneratedPdfCubit>()
+                                              .generatePdf(
+                                                  date: DateFormat('yyyy-MM-dd')
+                                                      .format(DateTime.now()),
+                                                  inventory: inventory.name,
+                                                  headers: [
+                                                    'Producto',
+                                                    'Stock',
+                                                  ],
+                                                  data: inventories[index]
+                                                      .products!
+                                                      .map((e) => [
+                                                            e.name,
+                                                            e.stock.toString()
+                                                          ])
+                                                      .toList()),
+                                        ),
+                                      ],
                                     ),
                                     Text(
                                       inventory.description ?? '',

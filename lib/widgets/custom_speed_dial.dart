@@ -21,13 +21,12 @@ class CustomDialActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return SpeedDial(
       activeIcon: Icons.close,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       foregroundColor: AppTheme.accentColor,
       gradient: null,
-      childPadding: const EdgeInsets.all(3),
       mini: true,
-      elevation: 2,
-      gradientBoxShape: BoxShape.circle,
+      elevation: 0,
+      // gradientBoxShape: BoxShape.circle,
       animatedIconTheme: IconThemeData(size: 22.w),
       icon: Icons.more_vert,
       buttonSize: Size(22.w, 22.w),
