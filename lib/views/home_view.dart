@@ -105,9 +105,8 @@ class HomeView extends StatelessWidget {
                       final Inventory inventory = inventories[index];
                       return GestureDetector(
                         onTap: () {
-                          context
-                              .read<GetProductsCubit>()
-                              .loadProducts(inventory.products ?? []);
+                          context.read<GetProductsCubit>().loadProducts(
+                              inventory.products ?? [], inventory.asset);
                           context
                               .read<GetSelectionProvidersCubit>()
                               .loadProviders(inventory.providers);
@@ -173,7 +172,8 @@ class HomeView extends StatelessWidget {
                                             context
                                                 .read<GetProductsCubit>()
                                                 .loadProducts(
-                                                    inventory.products ?? []);
+                                                    inventory.products ?? [],
+                                                    inventory.asset);
                                             context
                                                 .read<
                                                     GetSelectionProvidersCubit>()
