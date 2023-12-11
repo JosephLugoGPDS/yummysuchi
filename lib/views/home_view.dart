@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/app/utils/data_util.dart';
 import 'package:inventario_yummy_sushi/blocs/history/get_histories_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/inventories/delete/delete_inventory_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/pdf/generated_pdf_cubit.dart';
@@ -20,22 +21,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inventario_yummy_sushi/widgets/custom_speed_dial.dart';
 import 'package:inventario_yummy_sushi/widgets/theme_button_gradient.dart';
 
-// class HomeView extends StatelessWidget {
-//   const HomeView({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (context) => di.sl<GetInventoriesBloc>()
-//         ..add(FetchInventoriesEvent(
-//             uuid: (context.read<GetUuidBloc>().state as GetUuidSuccess).uuid)),
-//       child: const HomeScreen(),
-//     );
-//   }
-// }
+import 'package:inventario_yummy_sushi/injector_container.dart' as di;
 
 class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => di.sl<DeleteInventoryBloc>(),
+      child: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     debugPrint('build HomeScreen');
@@ -167,58 +168,151 @@ class HomeView extends StatelessWidget {
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        CustomDialActions(
-                                          onProductsPressed: () {
-                                            context
-                                                .read<GetProductsCubit>()
-                                                .loadProducts(
-                                                    inventory.products ?? [],
-                                                    inventory.asset);
-                                            context
-                                                .read<
-                                                    GetSelectionProvidersCubit>()
-                                                .loadProviders(
-                                                    inventory.providers);
-                                            context
-                                                .read<GetCurrentInventory>()
-                                                .loadInventory(inventory.name);
-                                            Navigator.of(context).pushNamed(
-                                              AppRoutes.productsScreen,
-                                            );
-                                          },
-                                          onShowPressed: () {
-                                            context
-                                                .read<GetCurrentInventory>()
-                                                .loadInventory(inventory.name);
-                                            context
-                                                .read<GetHistoriesBloc>()
-                                                .add(FetchHistoriesEvent(
+                                        BlocListener<DeleteInventoryBloc,
+                                            DeleteInventoryState>(
+                                          listener: (context,
+                                              stateDeleteInventoryState) {
+                                            if (stateDeleteInventoryState
+                                                is DeleteInventorySuccess) {
+                                              context
+                                                  .read<GetInventoriesBloc>()
+                                                  .add(FetchInventoriesEvent(
                                                     uuid: (context
                                                                 .read<GetUuidBloc>()
                                                                 .state
                                                             as GetUuidSuccess)
                                                         .uuid,
-                                                    inventory: inventory.name));
-                                            Navigator.of(context).pushNamed(
-                                                AppRoutes.historyListScreen);
+                                                  ));
+                                              Navigator.of(context).pop();
+                                            }
                                           },
-                                          onSharePressed: () => context
-                                              .read<GeneratedPdfCubit>()
-                                              .generatePdf(
-                                                  date: DateFormat('yyyy-MM-dd')
-                                                      .format(DateTime.now()),
-                                                  inventory: inventory.name,
-                                                  headers: [
-                                                    'Producto',
-                                                    'Stock',
-                                                  ],
-                                                  data: inventories[index]
-                                                      .products!
-                                                      .map((e) => [
-                                                            e.name,
-                                                            e.stock.toString()
-                                                          ])
-                                                      .toList()),
+                                          child: CustomDialActions(
+                                            onDeletePressed: () {
+                                              showDialog(
+                                                barrierDismissible: true,
+                                                context: context,
+                                                builder: (_) {
+                                                  return AlertDialog(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.w),
+                                                    ),
+                                                    title: const Text(
+                                                      'Eliminar inventario',
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    content: RichText(
+                                                      text: TextSpan(
+                                                        style:
+                                                            DefaultTextStyle.of(
+                                                                    context)
+                                                                .style,
+                                                        children: [
+                                                          const TextSpan(
+                                                            text:
+                                                                '¿Estás seguro de eliminar el inventario ',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          TextSpan(
+                                                            text:
+                                                                inventory.name,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: AppTheme
+                                                                  .redColor,
+                                                            ),
+                                                          ),
+                                                          const TextSpan(
+                                                            text: '?',
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: const Text(
+                                                          'Cancelar',
+                                                          style: TextStyle(
+                                                              color: AppTheme
+                                                                  .accentColor),
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            context.read<DeleteInventoryBloc>().add(DeleteInventory(
+                                                                uuid: (context
+                                                                            .read<
+                                                                                GetUuidBloc>()
+                                                                            .state
+                                                                        as GetUuidSuccess)
+                                                                    .uuid,
+                                                                name: inventory
+                                                                    .name));
+                                                          },
+                                                          child: Text(
+                                                            'Eliminar',
+                                                            style: TextStyle(
+                                                                color: AppTheme
+                                                                    .redColor
+                                                                    .withOpacity(
+                                                                        0.3)),
+                                                          )),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            onShowPressed: () {
+                                              context
+                                                  .read<GetCurrentInventory>()
+                                                  .loadInventory(
+                                                      inventory.name);
+                                              context
+                                                  .read<GetHistoriesBloc>()
+                                                  .add(FetchHistoriesEvent(
+                                                      uuid: (context
+                                                                  .read<
+                                                                      GetUuidBloc>()
+                                                                  .state
+                                                              as GetUuidSuccess)
+                                                          .uuid,
+                                                      inventory:
+                                                          inventory.name));
+                                              Navigator.of(context).pushNamed(
+                                                  AppRoutes.historyListScreen);
+                                            },
+                                            onSharePressed: () => context
+                                                .read<GeneratedPdfCubit>()
+                                                .generatePdf(
+                                                    date: DateFormat(
+                                                            'yyyy-MM-dd')
+                                                        .format(DateTime.now()),
+                                                    inventory: inventory.name,
+                                                    headers: [
+                                                      'Producto',
+                                                      'Stock',
+                                                    ],
+                                                    data: inventories[index]
+                                                        .products!
+                                                        .map((e) => [
+                                                              e.name,
+                                                              e.stock.toString()
+                                                            ])
+                                                        .toList()),
+                                          ),
                                         ),
                                       ],
                                     ),
