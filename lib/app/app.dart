@@ -9,6 +9,7 @@ import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.da
 import 'package:inventario_yummy_sushi/blocs/inventories/select_assets_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/pdf/generated_pdf_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/create/create_product_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/products/delete/delete_product_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_current_product_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cubit.dart';
@@ -59,6 +60,8 @@ class App extends StatelessWidget {
             create: (_) => di.sl<GetCurrentProductCubit>()),
         BlocProvider<UpdateProductBloc>(
             create: (_) => di.sl<UpdateProductBloc>()),
+        BlocProvider<DeleteProductBloc>(
+            create: (_) => di.sl<DeleteProductBloc>()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

@@ -10,6 +10,7 @@ import 'package:inventario_yummy_sushi/blocs/products/get_selection_providers_cu
 import 'package:inventario_yummy_sushi/blocs/products/products_controller_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
 import 'package:inventario_yummy_sushi/widgets/custom_multiselector.dart';
+import 'package:inventario_yummy_sushi/widgets/custom_return.dart';
 import 'package:inventario_yummy_sushi/widgets/loader_dialog.dart';
 import 'package:inventario_yummy_sushi/widgets/theme_button_gradient.dart';
 import 'package:inventario_yummy_sushi/widgets/theme_text_form_field.dart';
@@ -48,46 +49,79 @@ class CreateProductScreen extends StatelessWidget {
         .toList();
     final AppLocalizations l10n = context.l10n;
     return Scaffold(
-        appBar: AppBar(
-          foregroundColor: Colors.white,
-          backgroundColor: AppTheme.accentColor,
-          title: Text(l10n.createInventory),
-          elevation: 0,
-        ),
         body: BlocListener<CreateProductBloc, CreateProductState>(
-          listener: (context, stateCreateProductState) {
-            debugPrint('stateCreateProductState: $stateCreateProductState');
-            if (stateCreateProductState is CreateProductSuccess) {
-              context.read<GetInventoriesBloc>().add(FetchInventoriesEvent(
-                  uuid: (context.read<GetUuidBloc>().state as GetUuidSuccess)
-                      .uuid));
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.of(context).pop(true);
-            }
-            if (stateCreateProductState is CreateProductLoading) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => const LoaderDialog(),
-              );
-            }
-            if (stateCreateProductState is CreateProductFailure) {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(stateCreateProductState.error),
-                ),
-              );
-            }
-          },
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                20.w, 0, 20.w, MediaQuery.of(context).padding.bottom),
-            child: SingleChildScrollView(
+      listener: (context, stateCreateProductState) {
+        debugPrint('stateCreateProductState: $stateCreateProductState');
+        if (stateCreateProductState is CreateProductSuccess) {
+          context.read<GetInventoriesBloc>().add(FetchInventoriesEvent(
+              uuid:
+                  (context.read<GetUuidBloc>().state as GetUuidSuccess).uuid));
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.of(context).pop(true);
+        }
+        if (stateCreateProductState is CreateProductLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const LoaderDialog(),
+          );
+        }
+        if (stateCreateProductState is CreateProductFailure) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(stateCreateProductState.error),
+            ),
+          );
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+            20.w, 0, 20.w, MediaQuery.of(context).padding.bottom),
+        child: Stack(
+          children: [
+            SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        40.w,
+                        25.h + MediaQuery.of(context).padding.top,
+                        20.w,
+                        MediaQuery.of(context).padding.bottom),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 200.w,
+                              child: Text(
+                                context.read<GetCurrentInventory>().state,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.accentColor,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              l10n.app,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w200),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 40.h),
                   ThemeTextFormField(
                     textEditingController: nameController,
@@ -171,7 +205,10 @@ class CreateProductScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ));
+            const CustomReturn(),
+          ],
+        ),
+      ),
+    ));
   }
 }

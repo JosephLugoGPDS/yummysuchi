@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:inventario_yummy_sushi/app/routes/app_router.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_current_inventory.dart';
 import 'package:inventario_yummy_sushi/blocs/inventories/get_inventories_bloc.dart';
+import 'package:inventario_yummy_sushi/blocs/products/delete/delete_product_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/products/get_products_cubit.dart';
 import 'package:inventario_yummy_sushi/blocs/products/update/update_product_bloc.dart';
 import 'package:inventario_yummy_sushi/blocs/uuid/get_uuid_bloc.dart';
@@ -45,27 +46,18 @@ class ProductsView extends StatelessWidget {
             CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                BlocListener<UpdateProductBloc, UpdateProductState>(
-                  listener: (context, state) {
-                    if (state is UpdateProductFailure) {
+                BlocListener<DeleteProductBloc, DeleteProductState>(
+                  listener: (context, stateDeleteProductState) {
+                    if (stateDeleteProductState is DeleteProductFailure) {
+                      Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(state.error),
-                          backgroundColor: AppTheme.accentColor,
+                          content: Text(stateDeleteProductState.error),
+                          backgroundColor: AppTheme.redColor,
                         ),
                       );
                     }
-                    if (state is UpdateProductLoading) {
-                      showDialog(
-                          context: context,
-                          builder: (_) => const Center(
-                                child: LoaderDialog(),
-                              ));
-                    }
-                    if (state is UpdateProductInitial) {
-                      Navigator.of(context).pop();
-                    }
-                    if (state is UpdateProductSuccess) {
+                    if (stateDeleteProductState is DeleteProductSuccess) {
                       context.read<GetInventoriesBloc>().add(
                           FetchInventoriesEvent(
                               uuid: (context.read<GetUuidBloc>().state
@@ -75,51 +67,82 @@ class ProductsView extends StatelessWidget {
                       Navigator.pop(context);
                     }
                   },
-                  child: SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          40.w,
-                          25.h + MediaQuery.of(context).padding.top,
-                          20.w,
-                          MediaQuery.of(context).padding.bottom),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: 200.w,
-                                child: Text(
-                                  context.read<GetCurrentInventory>().state,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.accentColor,
+                  child: BlocListener<UpdateProductBloc, UpdateProductState>(
+                    listener: (context, state) {
+                      if (state is UpdateProductFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error),
+                            backgroundColor: AppTheme.accentColor,
+                          ),
+                        );
+                      }
+                      if (state is UpdateProductLoading) {
+                        showDialog(
+                            context: context,
+                            builder: (_) => const Center(
+                                  child: LoaderDialog(),
+                                ));
+                      }
+                      if (state is UpdateProductInitial) {
+                        Navigator.of(context).pop();
+                      }
+                      if (state is UpdateProductSuccess) {
+                        context.read<GetInventoriesBloc>().add(
+                            FetchInventoriesEvent(
+                                uuid: (context.read<GetUuidBloc>().state
+                                        as GetUuidSuccess)
+                                    .uuid));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            40.w,
+                            25.h + MediaQuery.of(context).padding.top,
+                            20.w,
+                            MediaQuery.of(context).padding.bottom),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 200.w,
+                                  child: Text(
+                                    context.read<GetCurrentInventory>().state,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.accentColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                l10n.app,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w200),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(AppRoutes.createProductsScreen);
-                            },
-                            icon: const Icon(
-                              Icons.add_shopping_cart,
-                              color: AppTheme.accentColor,
+                                Text(
+                                  l10n.app,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w200),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(AppRoutes.createProductsScreen);
+                              },
+                              icon: const Icon(
+                                Icons.add_shopping_cart,
+                                color: AppTheme.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -260,145 +283,263 @@ class ProductsView extends StatelessWidget {
                                   },
                                 );
                               },
-                              child: Container(
-                                clipBehavior: Clip.none,
-                                decoration: ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4.w),
-                                  ),
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 2.w, vertical: 5.h),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 15.w, vertical: 10.h),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.none,
+                                    decoration: ShapeDecoration(
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.w),
+                                      ),
+                                    ),
+                                    margin: EdgeInsets.only(
+                                      left: 2.w,
+                                      top: 5.h,
+                                      right: 10.w,
+                                      bottom: 5.h,
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 15.w, vertical: 10.h),
+                                    child: Column(
                                       children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                product.name,
-                                                maxLines: 2,
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                    color: product.stock <
-                                                                product
-                                                                    .stockMin ||
-                                                            product.stock >
-                                                                product
-                                                                    .stockMax ||
-                                                            product.stock ==
-                                                                product
-                                                                    .stockMin ||
-                                                            product.stock ==
-                                                                product.stockMax
-                                                        ? Colors.red
-                                                        : AppTheme.accentColor,
-                                                    fontSize: 17.sp,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    product.name,
+                                                    maxLines: 2,
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        color: product.stock <
+                                                                    product
+                                                                        .stockMin ||
+                                                                product.stock >
+                                                                    product
+                                                                        .stockMax ||
+                                                                product.stock ==
+                                                                    product
+                                                                        .stockMin ||
+                                                                product.stock ==
+                                                                    product
+                                                                        .stockMax
+                                                            ? Colors.red
+                                                            : AppTheme
+                                                                .accentColor,
+                                                        fontSize: 17.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  for (String provider
+                                                      in product.providers)
+                                                    Text(
+                                                      provider,
+                                                      maxLines: 1,
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: TextStyle(
+                                                          color: AppTheme
+                                                              .grayTextColor,
+                                                          fontSize: 10.sp),
+                                                    ),
+                                                ],
                                               ),
-                                              for (String provider
-                                                  in product.providers)
+                                            ),
+                                            const Spacer(),
+                                            Column(
+                                              children: [
                                                 Text(
-                                                  provider,
-                                                  maxLines: 1,
-                                                  textAlign: TextAlign.start,
+                                                  '${product.stock}',
+                                                  style: TextStyle(
+                                                      color: product.stock <
+                                                                  product
+                                                                      .stockMin ||
+                                                              product.stock >
+                                                                  product
+                                                                      .stockMax ||
+                                                              product.stock ==
+                                                                  product
+                                                                      .stockMin ||
+                                                              product.stock ==
+                                                                  product
+                                                                      .stockMax
+                                                          ? Colors.red
+                                                          : AppTheme
+                                                              .accentColor,
+                                                      fontSize: 24.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const Text(
+                                                  'und.',
+                                                  style: TextStyle(
+                                                      color: AppTheme
+                                                          .grayTextColor),
+                                                ),
+                                                const Text(
+                                                  'Stock',
                                                   style: TextStyle(
                                                       color: AppTheme
                                                           .grayTextColor,
-                                                      fontSize: 10.sp),
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
-                                            ],
-                                          ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        const Spacer(),
-                                        Column(
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              '${product.stock}',
-                                              style: TextStyle(
-                                                  color: product.stock <
-                                                              product
-                                                                  .stockMin ||
-                                                          product.stock >
-                                                              product
-                                                                  .stockMax ||
-                                                          product.stock ==
-                                                              product
-                                                                  .stockMin ||
-                                                          product.stock ==
-                                                              product.stockMax
-                                                      ? Colors.red
-                                                      : AppTheme.accentColor,
-                                                  fontSize: 24.sp,
-                                                  fontWeight: FontWeight.bold),
+                                            RichText(
+                                              text: TextSpan(
+                                                text: 'max: ',
+                                                style: const TextStyle(
+                                                    color:
+                                                        AppTheme.grayTextColor),
+                                                children: [
+                                                  TextSpan(
+                                                    text: '${product.stockMax}',
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            const Text(
-                                              'und.',
-                                              style: TextStyle(
-                                                  color:
-                                                      AppTheme.grayTextColor),
-                                            ),
-                                            const Text(
-                                              'Stock',
-                                              style: TextStyle(
-                                                  color: AppTheme.grayTextColor,
-                                                  fontWeight: FontWeight.bold),
+                                            RichText(
+                                              text: TextSpan(
+                                                text: 'min: ',
+                                                style: const TextStyle(
+                                                    color:
+                                                        AppTheme.grayTextColor),
+                                                children: [
+                                                  TextSpan(
+                                                    text: '${product.stockMin}',
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        RichText(
-                                          text: TextSpan(
-                                            text: 'max: ',
-                                            style: const TextStyle(
-                                                color: AppTheme.grayTextColor),
-                                            children: [
-                                              TextSpan(
-                                                text: '${product.stockMax}',
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                  ),
+                                  Positioned(
+                                    left: -10.w,
+                                    top: -10.h,
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        showDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (_) {
+                                            return AlertDialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.w),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        RichText(
-                                          text: TextSpan(
-                                            text: 'min: ',
-                                            style: const TextStyle(
-                                                color: AppTheme.grayTextColor),
-                                            children: [
-                                              TextSpan(
-                                                text: '${product.stockMin}',
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              title: const Text(
+                                                'Eliminar producto',
+                                                style: TextStyle(
+                                                    color: Colors.black),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                              content: RichText(
+                                                text: TextSpan(
+                                                  style: DefaultTextStyle.of(
+                                                          context)
+                                                      .style,
+                                                  children: [
+                                                    const TextSpan(
+                                                      text:
+                                                          '¿Estás seguro de eliminar el producto ',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: product.name,
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            AppTheme.redColor,
+                                                      ),
+                                                    ),
+                                                    const TextSpan(
+                                                      text: '?',
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text(
+                                                    'Cancelar',
+                                                    style: TextStyle(
+                                                        color: AppTheme
+                                                            .accentColor),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      context
+                                                          .read<
+                                                              DeleteProductBloc>()
+                                                          .add(
+                                                            DeleteNewProductEvent(
+                                                              uuid: (context
+                                                                          .read<
+                                                                              GetUuidBloc>()
+                                                                          .state
+                                                                      as GetUuidSuccess)
+                                                                  .uuid,
+                                                              inventory: context
+                                                                  .read<
+                                                                      GetCurrentInventory>()
+                                                                  .state,
+                                                              id: index,
+                                                            ),
+                                                          );
+                                                    },
+                                                    child: Text(
+                                                      'Eliminar',
+                                                      style: TextStyle(
+                                                          color: AppTheme
+                                                              .redColor
+                                                              .withOpacity(
+                                                                  0.3)),
+                                                    )),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: AppTheme.redColor,
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             );
                           },
