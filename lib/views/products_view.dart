@@ -88,13 +88,16 @@ class ProductsView extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                context.read<GetCurrentInventory>().state,
-                                maxLines: 2,
-                                style: TextStyle(
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.accentColor,
+                              SizedBox(
+                                width: 200.w,
+                                child: Text(
+                                  context.read<GetCurrentInventory>().state,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontSize: 24.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.accentColor,
+                                  ),
                                 ),
                               ),
                               Text(

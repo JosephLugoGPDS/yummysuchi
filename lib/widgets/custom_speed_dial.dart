@@ -39,36 +39,36 @@ class CustomDialActions extends StatelessWidget {
             width: 28.w,
             height: 28.w,
             decoration: const BoxDecoration(
-              color: AppTheme.grayTextColor,
+              color: AppTheme.primaryColor,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.share,
-              color: Colors.black,
+              color: Colors.white,
               size: 20.w,
             ),
           ),
           backgroundColor: Colors.transparent,
           onTap: onSharePressed,
         ),
-        SpeedDialChild(
-          elevation: 0,
-          child: Container(
-            width: 28.w,
-            height: 28.w,
-            decoration: const BoxDecoration(
-              color: AppTheme.secondColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.storefront_rounded,
-              color: Colors.white,
-              size: 20.w,
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-          onTap: onProductsPressed,
-        ),
+        // SpeedDialChild(
+        //   elevation: 0,
+        //   child: Container(
+        //     width: 28.w,
+        //     height: 28.w,
+        //     decoration: const BoxDecoration(
+        //       color: AppTheme.secondColor,
+        //       shape: BoxShape.circle,
+        //     ),
+        //     child: Icon(
+        //       Icons.storefront_rounded,
+        //       color: Colors.white,
+        //       size: 20.w,
+        //     ),
+        //   ),
+        //   backgroundColor: Colors.transparent,
+        //   onTap: onProductsPressed,
+        // ),
         SpeedDialChild(
           elevation: 0,
           child: Container(
@@ -79,7 +79,7 @@ class CustomDialActions extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.remove_red_eye_sharp,
+              Icons.history,
               color: Colors.white,
               size: 20.w,
             ),
